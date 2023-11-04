@@ -1,5 +1,5 @@
 {
-    "use_api": true,
+    "use_api": false,
     "api_options": {
         "model": "whisper-1",
         "language": null,
@@ -9,13 +9,13 @@
     "local_model_options": {
         "model": "base",
         "device": null,
-        "language": null,
+        "language": "English",
         "temperature": 0.0,
         "initial_prompt": null,
         "condition_on_previous_text": true,
         "verbose": false
     },
-    "activation_key": "ctrl+alt+space",
+    "activation_key": "F13",
     "silence_duration": 900,
     "writing_key_press_delay": 0.005,
     "remove_trailing_period": false,

@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "whisper-writer-2"
+version = "0.1.0"
+description = ""
+authors = ["N <47500890+avi-cenna@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.11"
+pyzmq = "^25.1.1"
+torch = "^2.1.0"
+openai-whisper = {git = "https://github.com/openai/whisper.git"}
+openai = "^0.28.1"
+keyboard = "^0.13.5"
+pyautogui = "^0.9.54"
+sounddevice = "^0.4.6"
+webrtcvad = "^2.0.10"
+python-dotenv = "^1.0.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
