@@ -2,34 +2,10 @@ import json
 import os
 import queue
 import threading
-import time
 
-import keyboard
-import zmq
+from loguru import logger
 
-from status_window import StatusWindow
 from transcription import record_and_transcribe
-
-# def on_shortcut():
-#     global status_queue
-#     clear_status_queue()
-#
-#     status_queue.put(('recording', 'Recording...'))
-#     recording_thread = ResultThread(target=record_and_transcribe, args=(status_queue,), kwargs={'config': config})
-#     recording_thread.start()
-#
-#     recording_thread.join()
-#     status_queue.put(('cancel', ''))
-#
-#     transcribed_text = recording_thread.result
-#     print(transcribed_text)
-#
-#     # if transcribed_text:
-#     #     pyautogui.write(transcribed_text, interval=config['writing_key_press_delay'])
-
-
-# keyboard.add_hotkey(config['activation_key'], on_shortcut)
-# keyboard.add_hotkey('F13', on_shortcut)
 
 
 class ResultThread(threading.Thread):
@@ -93,73 +69,33 @@ def clear_status_queue():
             break
 
 
-def on_shortcut():
+def rec():
     global status_queue
+    clear_status_queue()
 
+    status_queue.put(("recording", "Recording..."))
     recording_thread = ResultThread(
         target=record_and_transcribe, args=(status_queue,), kwargs={"config": config}
     )
+    logger.debug(f"Starting recording thread")
     recording_thread.start()
-
     recording_thread.join()
-
-    status_queue.put(("cancel", ""))
+    logger.debug(f"Finished recording")
 
     transcribed_text = recording_thread.result
-    print(f"Transcribed text: {transcribed_text}")
-    socket.send_string(transcribed_text)
-
-
-def format_keystrokes(key_string):
-    return "+".join(word.capitalize() for word in key_string.split("+"))
+    logger.debug(f"Transcribed text: {transcribed_text}")
+    print(transcribed_text, end="")
 
 
 config = load_config_with_defaults()
 method = "OpenAI's API" if config["use_api"] else "a local model"
 status_queue = queue.Queue()
 
-# keyboard.add_hotkey("F13", on_shortcut)
-
-# print(
-#     f'Script activated. Whisper is set to run using {method}. To change this, modify the "use_api" value in the src\\config.json file.'
-# )
-# print(
-#     f'Press {format_keystrokes(config["activation_key"])} to start recording and transcribing. Press Ctrl+C on the terminal window to quit.'
-# )
-
-
-context = zmq.Context()
-socket = context.socket(zmq.REP)
-socket.bind("tcp://*:5555")
-print("Server started")
-
 
 def main():
-    while True:
-        #  Wait for next request from client
-        message = socket.recv().decode("utf-8")
-        print(f"Received request: {message}")
-
-        # TODO: elaborate
-        # match message.split():
-
-        match message.split(" ")[0]:
-            case "start":
-                on_shortcut()
-            case "echo":
-                socket.send_string(message.split(" ")[1])
-            case "test":
-                socket.send_string("hello, world")
-            case "exit":
-                socket.send_string("exit")
-                break
-            case _:
-                socket.send_string("Please send either 'Hello' or 'World'")
+    rec()
 
 
 if __name__ == "__main__":
-    try:
-        main()
-    except KeyboardInterrupt:
-        print("\nExiting the script...")
-        os.system("exit")
+    logger.debug(f"Starting main")
+    main()
