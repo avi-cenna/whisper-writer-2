@@ -146,6 +146,8 @@ def main():
         match message.split(" ")[0]:
             case "start":
                 on_shortcut()
+            # case "start":
+            #     on_shortcut()
             case "echo":
                 socket.send_string(message.split(" ")[1])
             case "test":

@@ -8,3 +8,9 @@ run:
 test:
     sudo poetry run python src/main_z.py
 
+serve:
+    poetry run python src/main_z.py
+
+send:
+    poetry run python src/main_client.py
+
